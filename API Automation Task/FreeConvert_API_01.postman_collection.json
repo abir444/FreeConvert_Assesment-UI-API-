@@ -1,0 +1,213 @@
+{
+	"info": {
+		"_postman_id": "48d5f681-5b21-4bd9-af05-afa446611588",
+		"name": "FreeConvert_API_01",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22801896"
+	},
+	"item": [
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var token = jsonData.authentication.token;\r",
+							"pm.collectionVariables.set(\"token\", token)\r",
+							"pm.environment.set(\"token\",token)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"abir4.sebpo@gmail.com\",\r\n    \"password\" : \"abir4444\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://juice-shop.herokuapp.com/rest/user/login",
+					"protocol": "https",
+					"host": [
+						"juice-shop",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"rest",
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add_item",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Successful add status response\", function () {\r",
+							"    let response = pm.response.json();\r",
+							"     pm.expect(response.status).to.equal(\"success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"ProductId\":1,\"BasketId\":\"36\",\"quantity\":1}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://juice-shop.herokuapp.com/api/BasketItems/",
+					"protocol": "https",
+					"host": [
+						"juice-shop",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"BasketItems",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify_Basket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//console the added items \r",
+							"var jsonData = pm.response.json();\r",
+							"var inCart = jsonData.data.Products.length;\r",
+							"console.log(inCart) // show the added item in the cart\r",
+							"\r",
+							"// check for 1 item added or not\r",
+							"pm.test(\"1 items are added successfully\", function () { \r",
+							"    let jsonData = pm.response.json();\r",
+							"     pm.expect(jsonData.data.Products.length).to.equal(1);\r",
+							"});\r",
+							"\r",
+							"// Verify basket is not empty\r",
+							"pm.test(\"Items are added to the basket!\", function () { \r",
+							"    let jsonData = pm.response.json();\r",
+							"     pm.expect(jsonData.data.Products.length).to.not.equal(0)\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://juice-shop.herokuapp.com/rest/basket/36",
+					"protocol": "https",
+					"host": [
+						"juice-shop",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"rest",
+						"basket",
+						"36"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
